@@ -26,6 +26,7 @@ export interface BlogInput {
 }
 
 export interface BlogOutput {
+  title: string;
   html: string;
   plainText: string;
   imageGuide: ImagePlacement[];

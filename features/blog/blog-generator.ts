@@ -85,9 +85,15 @@ export async function generateBlogPost(
     visionDescriptions,
   });
 
-  const html = await provider.generateText(userPrompt, systemPrompt);
+  const raw = await provider.generateText(userPrompt, systemPrompt);
+
+  // Extract title from [TITLE]...[/TITLE] tag
+  const titleMatch = raw.match(/\[TITLE\](.*?)\[\/TITLE\]/);
+  const title = titleMatch ? titleMatch[1].trim() : input.storeName;
+  const html = raw.replace(/\[TITLE\].*?\[\/TITLE\]\s*/, "").trim();
 
   return {
+    title,
     html,
     plainText: htmlToPlainText(html),
     imageGuide: extractImageGuide(html),

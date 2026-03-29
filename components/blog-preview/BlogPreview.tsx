@@ -34,11 +34,22 @@ export function BlogPreview({ result, images }: BlogPreviewProps) {
     <div className="flex flex-col gap-4">
       <h2 className="text-lg font-bold text-gray-800">생성 결과</h2>
 
+      {/* Title */}
+      <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 flex items-center justify-between">
+        <div>
+          <span className="text-xs text-gray-500 block mb-1">추천 제목</span>
+          <span className="text-base font-bold text-gray-900">{result.title}</span>
+        </div>
+        <CopyButton text={result.title} label="제목 복사" />
+      </div>
+
+      {/* Preview */}
       <div
         className="border rounded-lg p-6 bg-white prose prose-sm max-w-none"
         dangerouslySetInnerHTML={{ __html: previewHtml }}
       />
 
+      {/* Image Guide */}
       {result.imageGuide.length > 0 && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
           <h3 className="text-sm font-bold text-blue-800 mb-2">이미지 배치 가이드</h3>
@@ -52,13 +63,13 @@ export function BlogPreview({ result, images }: BlogPreviewProps) {
         </div>
       )}
 
+      {/* Copy Buttons */}
       <div className="flex gap-2">
         <CopyButton text={result.plainText} label="텍스트 복사" />
-        <CopyButton text={result.html} label="HTML 복사" />
         <CopyButton
           text={result.plainText}
           richHtml={richHtml}
-          label="리치텍스트 복사 (실험)"
+          label="리치텍스트 복사"
         />
       </div>
     </div>
