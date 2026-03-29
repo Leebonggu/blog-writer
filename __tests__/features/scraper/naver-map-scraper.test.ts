@@ -14,6 +14,18 @@ describe("extractPlaceId", () => {
     expect(extractPlaceId("https://map.naver.com/v5/search/치킨/place/1234567")).toBe("1234567");
   });
 
+  it("extracts place ID from mobile restaurant URL", () => {
+    expect(extractPlaceId("https://m.place.naver.com/restaurant/1234567/home")).toBe("1234567");
+  });
+
+  it("extracts place ID from mobile cafe URL", () => {
+    expect(extractPlaceId("https://m.place.naver.com/cafe/9876543")).toBe("9876543");
+  });
+
+  it("extracts place ID from mobile hotel URL", () => {
+    expect(extractPlaceId("https://m.place.naver.com/hotel/5555555")).toBe("5555555");
+  });
+
   it("returns null for naver.me short URL (no place ID)", () => {
     expect(extractPlaceId("https://naver.me/xAbCdEf")).toBe(null);
   });

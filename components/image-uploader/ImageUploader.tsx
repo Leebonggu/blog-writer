@@ -12,19 +12,37 @@ export function ImageUploader({ images, onChange, maxImages = 20 }: ImageUploade
   const [isDragging, setIsDragging] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const resizeImage = (file: File, maxSize: number): Promise<string> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxSize || height > maxSize) {
+          if (width > height) {
+            height = Math.round((height * maxSize) / width);
+            width = maxSize;
+          } else {
+            width = Math.round((width * maxSize) / height);
+            height = maxSize;
+          }
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d")!;
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL("image/jpeg", 0.85));
+      };
+      img.src = URL.createObjectURL(file);
+    });
+  };
+
   const processFiles = (files: FileList | File[]) => {
     const fileArray = Array.from(files);
     const remaining = maxImages - images.length;
     const filesToProcess = fileArray.slice(0, remaining);
 
-    const promises = filesToProcess.map(
-      (file) =>
-        new Promise<string>((resolve) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result as string);
-          reader.readAsDataURL(file);
-        }),
-    );
+    const promises = filesToProcess.map((file) => resizeImage(file, 1024));
 
     Promise.all(promises).then((newImages) => {
       onChange([...images, ...newImages]);

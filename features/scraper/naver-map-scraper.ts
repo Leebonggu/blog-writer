@@ -1,7 +1,7 @@
 import type { StoreInfo, StoreInfoScraper } from "./types";
 
 export function extractPlaceId(url: string): string | null {
-  const match = url.match(/place\/(\d+)/);
+  const match = url.match(/(?:place|restaurant|cafe|hotel)\/(\d+)/);
   return match ? match[1] : null;
 }
 
