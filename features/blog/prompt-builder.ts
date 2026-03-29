@@ -23,6 +23,36 @@ interface PromptOutput {
   userPrompt: string;
 }
 
+function buildImageGuide(count: number): string {
+  if (count === 0) return "## 이미지\n이미지가 없습니다. 이미지 마커를 사용하지 마세요.";
+
+  const intro = 1;
+  const atmosphere = Math.min(2, Math.max(1, Math.round(count * 0.15)));
+  const closing = 0;
+  const info = 0;
+  const menu = count - intro - atmosphere - closing - info;
+
+  const lines = [
+    `## 이미지 배치 계획`,
+    `총 ${count}장의 이미지가 업로드되었습니다. [IMAGE_1]~[IMAGE_${count}] 마커를 모두 사용하세요.`,
+    ``,
+    `### 섹션별 배분`,
+    `- 인트로: ${intro}장 (대표 사진)`,
+    `- 가게/주문 정보: ${info}장 (텍스트만)`,
+    `- 분위기/포장: ${atmosphere}장`,
+    `- 메뉴/상품 리뷰: ${menu}장 (가장 많이 배치)`,
+    `- 총평/마무리: ${closing}장 (텍스트로 마무리)`,
+    ``,
+    `### 배치 리듬`,
+    `- 이미지 1장 → 텍스트 2~3줄 → 이미지 1장 교차 반복`,
+    `- 이미지 2장 연속까지는 허용, 3장 이상 연속 금지`,
+    `- 텍스트 5줄 이상 이미지 없이 이어지지 않도록`,
+    `- 메뉴/상품 리뷰: 이미지 먼저 → 설명 순서`,
+  ];
+
+  return lines.join("\n");
+}
+
 export function buildPrompt(input: PromptInput): PromptOutput {
   let toneInstruction: string;
   if (input.tonePresetId === "custom" && input.customToneInstruction) {
@@ -56,7 +86,7 @@ export function buildPrompt(input: PromptInput): PromptOutput {
     parts.push(`## 내돈내산\n직접 방문하여 작성하는 솔직한 후기입니다.`);
   }
 
-  parts.push(`## 이미지\n이미지 ${input.imageCount}장이 업로드되었습니다. [IMAGE_1]~[IMAGE_${input.imageCount}] 마커를 사용해 적절한 위치에 배치해주세요.`);
+  parts.push(buildImageGuide(input.imageCount));
 
   if (input.visionDescriptions && input.visionDescriptions.length > 0) {
     const descriptions = input.visionDescriptions

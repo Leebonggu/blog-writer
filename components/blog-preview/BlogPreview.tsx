@@ -2,13 +2,16 @@
 
 import type { BlogOutput } from "@/features/blog/types";
 import { CopyButton } from "@/components/ui/CopyButton";
+import { CoverImageGenerator } from "@/components/cover-image/CoverImageGenerator";
 
 interface BlogPreviewProps {
   result: BlogOutput;
   images: string[];
+  storeName?: string;
+  locationCategory?: string;
 }
 
-export function BlogPreview({ result, images }: BlogPreviewProps) {
+export function BlogPreview({ result, images, storeName, locationCategory }: BlogPreviewProps) {
   const previewHtml = result.html.replace(
     /\[IMAGE_(\d+)\]\s*(?:<!--.*?-->)?/g,
     (_, num) => {
@@ -42,6 +45,16 @@ export function BlogPreview({ result, images }: BlogPreviewProps) {
         </div>
         <CopyButton text={result.title} label="제목 복사" />
       </div>
+
+      {/* Cover Image Generator */}
+      {images.length > 0 && storeName && (
+        <CoverImageGenerator
+          backgroundImage={images[0]}
+          storeName={storeName}
+          locationCategory={locationCategory || ""}
+          subtitle={result.title}
+        />
+      )}
 
       {/* Preview */}
       <div

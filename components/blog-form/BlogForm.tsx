@@ -354,7 +354,12 @@ export function BlogForm() {
       {/* Result */}
       {result && (
         <section ref={resultRef} className="space-y-4 scroll-mt-4">
-          <BlogPreview result={result} images={images} />
+          <BlogPreview
+            result={result}
+            images={images}
+            storeName={storeName}
+            locationCategory={`${storeInfo?.address?.split(" ").slice(0, 2).join(" ") || ""} ${storeInfo?.category || ""}`.trim()}
+          />
           <Button variant="secondary" onClick={handleGenerate} loading={loading} className="w-full sm:w-auto">
             다시 생성하기
           </Button>

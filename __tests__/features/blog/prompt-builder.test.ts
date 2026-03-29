@@ -30,7 +30,7 @@ describe("buildPrompt", () => {
     expect(result.userPrompt).toContain("맛있는 치킨집");
     expect(result.userPrompt).toContain("서울시 강남구");
     expect(result.userPrompt).toContain("후라이드치킨");
-    expect(result.userPrompt).toContain("이미지 5장");
+    expect(result.userPrompt).toContain("총 5장의 이미지가 업로드되었습니다");
   });
 
   it("includes sponsor info for sponsored posts", () => {
