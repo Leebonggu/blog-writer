@@ -20,6 +20,16 @@ export function BlogPreview({ result, images }: BlogPreviewProps) {
     },
   );
 
+  // Rich text version: images replaced with placeholder text (no base64 to avoid 5MB limit)
+  const richHtml = result.html.replace(
+    /\[IMAGE_(\d+)\]\s*(?:<!--.*?-->)?/g,
+    (_, num) => {
+      const guide = result.imageGuide.find((g) => g.imageIndex === parseInt(num, 10));
+      const desc = guide?.description ?? `이미지 ${num}`;
+      return `<p style="margin:12px 0;padding:12px;background:#f3f4f6;border-radius:8px;text-align:center;color:#6b7280;font-size:14px">[${desc}]</p>`;
+    },
+  );
+
   return (
     <div className="flex flex-col gap-4">
       <h2 className="text-lg font-bold text-gray-800">생성 결과</h2>
@@ -47,7 +57,7 @@ export function BlogPreview({ result, images }: BlogPreviewProps) {
         <CopyButton text={result.html} label="HTML 복사" />
         <CopyButton
           text={result.plainText}
-          richHtml={previewHtml}
+          richHtml={richHtml}
           label="리치텍스트 복사 (실험)"
         />
       </div>
