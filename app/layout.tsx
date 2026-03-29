@@ -15,6 +15,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "네이버 맛집 블로그 글 생성기",
   description: "AI로 네이버 블로그 맛집 리뷰를 자동 생성합니다",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function RootLayout({
