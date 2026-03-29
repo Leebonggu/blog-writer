@@ -6,7 +6,7 @@ import type { StoreInfo } from "@/features/scraper/types";
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const { storeName, storeInfo, sponsorType, sponsorName, images, tonePresetId, referenceText, requiredPhrases, revisitIntent, useVision, model } = body;
+  const { category, storeName, storeInfo, sponsorType, sponsorName, images, tonePresetId, referenceText, requiredPhrases, revisitIntent, useVision, model } = body;
 
   if (!storeName || !storeInfo) {
     return NextResponse.json({ error: "storeName and storeInfo are required" }, { status: 400 });
@@ -19,6 +19,7 @@ export async function POST(request: Request) {
     });
 
     const input: BlogInput = {
+      category: category ?? "restaurant",
       storeName,
       naverMapUrl: "",
       sponsorType: sponsorType ?? "self-paid",

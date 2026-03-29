@@ -16,11 +16,13 @@ const mockStoreInfo: StoreInfo = {
 describe("buildPrompt", () => {
   it("builds prompt with store info and tone", () => {
     const result = buildPrompt({
+      category: "restaurant",
       storeName: "맛있는 치킨집",
       storeInfo: mockStoreInfo,
       tonePresetId: "friendly",
       sponsorType: "self-paid",
       imageCount: 5,
+      revisitIntent: "definitely",
     });
 
     expect(result.systemPrompt).toContain("네이버 블로그 맛집 리뷰");
@@ -33,12 +35,14 @@ describe("buildPrompt", () => {
 
   it("includes sponsor info for sponsored posts", () => {
     const result = buildPrompt({
+      category: "restaurant",
       storeName: "맛있는 치킨집",
       storeInfo: mockStoreInfo,
       tonePresetId: "informative",
       sponsorType: "sponsored",
       sponsorName: "OO치킨 본사",
       imageCount: 3,
+      revisitIntent: "definitely",
     });
 
     expect(result.userPrompt).toContain("협찬");
@@ -47,6 +51,7 @@ describe("buildPrompt", () => {
 
   it("includes required phrases", () => {
     const result = buildPrompt({
+      category: "restaurant",
       storeName: "맛있는 치킨집",
       storeInfo: mockStoreInfo,
       tonePresetId: "friendly",
@@ -60,12 +65,14 @@ describe("buildPrompt", () => {
 
   it("includes custom tone from reference analysis", () => {
     const result = buildPrompt({
+      category: "restaurant",
       storeName: "맛있는 치킨집",
       storeInfo: mockStoreInfo,
       tonePresetId: "custom",
       customToneInstruction: "짧은 문장, ~했다 체, 감성적",
       sponsorType: "self-paid",
       imageCount: 3,
+      revisitIntent: "definitely",
     });
 
     expect(result.systemPrompt).toContain("짧은 문장");
@@ -73,6 +80,7 @@ describe("buildPrompt", () => {
 
   it("includes vision analysis results when provided", () => {
     const result = buildPrompt({
+      category: "restaurant",
       storeName: "맛있는 치킨집",
       storeInfo: mockStoreInfo,
       tonePresetId: "friendly",

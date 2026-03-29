@@ -7,11 +7,13 @@ import { ImageUploader } from "@/components/image-uploader/ImageUploader";
 import { BlogPreview } from "@/components/blog-preview/BlogPreview";
 import { GeneratingOverlay } from "@/components/ui/GeneratingOverlay";
 import type { BlogOutput, SponsorType, TonePresetId, RevisitIntent } from "@/features/blog/types";
+import type { CategoryId } from "@/features/blog/templates";
 import type { LLMModel } from "@/features/llm/types";
 import type { StoreInfo } from "@/features/scraper/types";
 
 export function BlogForm() {
   // Form state
+  const [category, setCategory] = useState<CategoryId>("restaurant");
   const [storeName, setStoreName] = useState("");
   const [naverMapUrl, setNaverMapUrl] = useState("");
   const [sponsorType, setSponsorType] = useState<SponsorType>("self-paid");
@@ -112,6 +114,7 @@ export function BlogForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          category,
           storeName,
           storeInfo: effectiveStoreInfo,
           sponsorType,
@@ -142,12 +145,38 @@ export function BlogForm() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6 sm:space-y-8">
+      {/* Category */}
+      <section className="space-y-4">
+        <div className="flex gap-2">
+          {[
+            { id: "restaurant" as CategoryId, label: "맛집" },
+            { id: "delivery" as CategoryId, label: "배달" },
+            { id: "shop" as CategoryId, label: "소품샵" },
+          ].map((cat) => (
+            <button
+              key={cat.id}
+              type="button"
+              onClick={() => setCategory(cat.id)}
+              className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                category === cat.id
+                  ? "bg-green-600 text-white"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              }`}
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
+      </section>
+
       {/* Basic Info */}
       <section className="space-y-4">
         <h2 className="text-base sm:text-lg font-bold text-gray-800">기본 정보</h2>
 
         <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-gray-700">상호명 *</label>
+          <label className="text-sm font-medium text-gray-700">
+            {category === "delivery" ? "브랜드/가게명 *" : "상호명 *"}
+          </label>
           <input
             type="text"
             value={storeName}

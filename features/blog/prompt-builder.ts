@@ -1,9 +1,11 @@
 import type { TonePresetId } from "./types";
 import type { StoreInfo } from "@/features/scraper/types";
+import type { CategoryId } from "./templates";
 import { getTonePreset } from "./tone-presets";
-import { RESTAURANT_SYSTEM_PROMPT } from "./templates/restaurant";
+import { buildCategorySystemPrompt } from "./templates";
 
 interface PromptInput {
+  category: CategoryId;
   storeName: string;
   storeInfo: StoreInfo;
   tonePresetId: TonePresetId | "custom";
@@ -30,7 +32,8 @@ export function buildPrompt(input: PromptInput): PromptOutput {
     toneInstruction = preset?.promptInstruction ?? "";
   }
 
-  const systemPrompt = `${RESTAURANT_SYSTEM_PROMPT}\n\n## 문체\n${toneInstruction}`;
+  const categoryPrompt = buildCategorySystemPrompt(input.category);
+  const systemPrompt = `${categoryPrompt}\n\n## 문체\n${toneInstruction}`;
 
   const parts: string[] = [];
 

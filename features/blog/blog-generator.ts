@@ -74,6 +74,7 @@ export async function generateBlogPost(
 
   // Step 3: Build prompt and generate
   const { systemPrompt, userPrompt } = buildPrompt({
+    category: input.category ?? "restaurant",
     storeName: input.storeName,
     storeInfo,
     tonePresetId: input.tonePresetId,
