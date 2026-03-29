@@ -45,6 +45,7 @@ export function BlogForm() {
 
   // Refs
   const resultRef = useRef<HTMLDivElement>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   // Auto-scroll to result when generated
   useEffect(() => {
@@ -110,10 +111,14 @@ export function BlogForm() {
     setError("");
     setResult(null);
 
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
     try {
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        signal: controller.signal,
         body: JSON.stringify({
           category,
           storeName,
@@ -139,10 +144,19 @@ export function BlogForm() {
       const data = await res.json();
       setResult(data);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "글 생성에 실패했습니다.");
+      if (e instanceof DOMException && e.name === "AbortError") {
+        setError("생성이 취소되었습니다.");
+      } else {
+        setError(e instanceof Error ? e.message : "글 생성에 실패했습니다.");
+      }
     } finally {
+      abortControllerRef.current = null;
       setLoading(false);
     }
+  };
+
+  const handleCancel = () => {
+    abortControllerRef.current?.abort();
   };
 
   return (
@@ -349,9 +363,15 @@ export function BlogForm() {
 
       {/* Generate */}
       <div className="flex flex-col gap-2 sticky bottom-0 bg-gray-50 py-3 -mx-4 px-4 sm:static sm:bg-transparent sm:py-0 sm:mx-0 sm:px-0">
-        <Button onClick={handleGenerate} loading={loading} className="w-full py-3 text-base sm:text-lg">
-          글 생성하기
-        </Button>
+        {loading ? (
+          <Button onClick={handleCancel} className="w-full py-3 text-base sm:text-lg bg-red-500 hover:bg-red-600">
+            생성 취소
+          </Button>
+        ) : (
+          <Button onClick={handleGenerate} className="w-full py-3 text-base sm:text-lg">
+            글 생성하기
+          </Button>
+        )}
         {error && <p className="text-sm text-red-500">{error}</p>}
       </div>
 
