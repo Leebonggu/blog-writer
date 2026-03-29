@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/Select";
 import { ImageUploader } from "@/components/image-uploader/ImageUploader";
 import { BlogPreview } from "@/components/blog-preview/BlogPreview";
+import { GeneratingOverlay } from "@/components/ui/GeneratingOverlay";
 import type { BlogOutput, SponsorType, TonePresetId } from "@/features/blog/types";
 import type { LLMModel } from "@/features/llm/types";
 import type { StoreInfo } from "@/features/scraper/types";
@@ -286,6 +287,15 @@ export function BlogForm() {
         </Button>
         {error && <p className="text-sm text-red-500">{error}</p>}
       </div>
+
+      {/* Loading Overlay */}
+      {loading && (
+        <GeneratingOverlay
+          useVision={useVision}
+          imageCount={images.length}
+          hasReference={tonePresetId === "custom" && !!referenceText}
+        />
+      )}
 
       {/* Result */}
       {result && (

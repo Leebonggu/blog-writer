@@ -16,7 +16,7 @@ async function resolveShortUrl(url: string): Promise<string> {
 }
 
 function extractApolloState(html: string): Record<string, any> | null {
-  const match = html.match(/window\.__APOLLO_STATE__\s*=\s*({.*?});\s*\n/s);
+  const match = html.match(/window\.__APOLLO_STATE__\s*=\s*({.*?});\s*\n/);
   if (!match) return null;
   return JSON.parse(match[1]);
 }
