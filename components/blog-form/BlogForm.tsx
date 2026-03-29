@@ -22,6 +22,7 @@ export function BlogForm() {
   const [tonePresetId, setTonePresetId] = useState<TonePresetId | "custom">("friendly");
   const [referenceText, setReferenceText] = useState("");
   const [requiredPhrases, setRequiredPhrases] = useState("");
+  const [personalNote, setPersonalNote] = useState("");
   const [revisitIntent, setRevisitIntent] = useState<RevisitIntent>("definitely");
   const [useVision, setUseVision] = useState(true);
   const [model, setModel] = useState<LLMModel>("claude-sonnet");
@@ -123,6 +124,7 @@ export function BlogForm() {
           tonePresetId,
           referenceText: tonePresetId === "custom" ? referenceText : undefined,
           requiredPhrases: requiredPhrases || undefined,
+          personalNote: personalNote || undefined,
           revisitIntent,
           useVision,
           model,
@@ -312,6 +314,17 @@ export function BlogForm() {
             onChange={(e) => setRequiredPhrases(e.target.value)}
             placeholder="예: 바삭바삭한 치킨, 가성비 맛집"
             rows={2}
+            className="border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <label className="text-sm font-medium text-gray-700">내 생각/감상 (선택)</label>
+          <textarea
+            value={personalNote}
+            onChange={(e) => setPersonalNote(e.target.value)}
+            placeholder={"예: 사장님이 엄청 친절했고, 반찬 리필 무한\n분위기가 아늑해서 데이트하기 좋았음"}
+            rows={3}
             className="border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
           />
         </div>

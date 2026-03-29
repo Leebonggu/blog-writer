@@ -83,6 +83,7 @@ export async function generateBlogPost(
     sponsorName: input.sponsorName,
     imageCount: input.images.length,
     requiredPhrases: input.requiredPhrases,
+    personalNote: input.personalNote,
     revisitIntent: input.revisitIntent ?? "definitely",
     visionDescriptions,
   });

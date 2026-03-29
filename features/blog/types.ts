@@ -26,6 +26,7 @@ export interface BlogInput {
   referenceText?: string;
   requiredPhrases?: string;
   revisitIntent: RevisitIntent;
+  personalNote?: string;
   useVision: boolean;
   model: LLMModel;
 }

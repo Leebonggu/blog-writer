@@ -14,6 +14,7 @@ interface PromptInput {
   sponsorName?: string;
   imageCount: number;
   requiredPhrases?: string;
+  personalNote?: string;
   revisitIntent: "definitely" | "maybe" | "no";
   visionDescriptions?: string[];
 }
@@ -101,6 +102,10 @@ export function buildPrompt(input: PromptInput): PromptOutput {
     no: "재방문 의사 없음 (아쉬웠음)",
   };
   parts.push(`## 재방문 의사\n${revisitMap[input.revisitIntent]}\n총평에 이 재방문 의사를 자연스럽게 반영해주세요.`);
+
+  if (input.personalNote) {
+    parts.push(`## 작성자의 개인 감상/메모\n아래 내용은 작성자가 직접 느낀 점입니다. 글에 자연스럽게 녹여서 반영해주세요. 그대로 복사하지 말고, 톤에 맞게 재구성하세요.\n"${input.personalNote}"`);
+  }
 
   if (input.requiredPhrases) {
     parts.push(`## 필수 포함 문구\n다음 문구를 글에 자연스럽게 녹여서 반드시 포함해주세요:\n"${input.requiredPhrases}"`);
