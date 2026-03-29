@@ -15,6 +15,28 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "블로그펜 — AI 블로그 리뷰 생성기",
   description: "사진과 가게 정보만 넣으면, 블로그 리뷰가 완성됩니다",
+  metadataBase: new URL("https://pen.2lee.kr"),
+  openGraph: {
+    title: "블로그펜",
+    description: "사진과 가게 정보만 넣으면, 블로그 리뷰가 완성됩니다",
+    url: "https://pen.2lee.kr",
+    siteName: "블로그펜",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "블로그펜 — AI 블로그 리뷰 생성기",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "블로그펜",
+    description: "사진과 가게 정보만 넣으면, 블로그 리뷰가 완성됩니다",
+    images: ["/og-image.png"],
+  },
   robots: {
     index: false,
     follow: false,
