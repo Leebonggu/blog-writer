@@ -6,7 +6,7 @@ import { Select } from "@/components/ui/Select";
 import { ImageUploader } from "@/components/image-uploader/ImageUploader";
 import { BlogPreview } from "@/components/blog-preview/BlogPreview";
 import { GeneratingOverlay } from "@/components/ui/GeneratingOverlay";
-import type { BlogOutput, SponsorType, TonePresetId } from "@/features/blog/types";
+import type { BlogOutput, SponsorType, TonePresetId, RevisitIntent } from "@/features/blog/types";
 import type { LLMModel } from "@/features/llm/types";
 import type { StoreInfo } from "@/features/scraper/types";
 
@@ -20,6 +20,7 @@ export function BlogForm() {
   const [tonePresetId, setTonePresetId] = useState<TonePresetId | "custom">("friendly");
   const [referenceText, setReferenceText] = useState("");
   const [requiredPhrases, setRequiredPhrases] = useState("");
+  const [revisitIntent, setRevisitIntent] = useState<RevisitIntent>("definitely");
   const [useVision, setUseVision] = useState(true);
   const [model, setModel] = useState<LLMModel>("claude-sonnet");
 
@@ -109,6 +110,7 @@ export function BlogForm() {
           tonePresetId,
           referenceText: tonePresetId === "custom" ? referenceText : undefined,
           requiredPhrases: requiredPhrases || undefined,
+          revisitIntent,
           useVision,
           model,
         }),
@@ -261,6 +263,17 @@ export function BlogForm() {
             className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
           />
         </div>
+
+        <Select
+          label="재방문 의사"
+          value={revisitIntent}
+          onChange={(e) => setRevisitIntent(e.target.value as RevisitIntent)}
+          options={[
+            { value: "definitely", label: "꼭 재방문! (강력 추천)" },
+            { value: "maybe", label: "기회되면 다시 (괜찮았음)" },
+            { value: "no", label: "재방문 없음 (아쉬웠음)" },
+          ]}
+        />
 
         <div className="flex items-center gap-4">
           <label className="flex items-center gap-2 text-sm">

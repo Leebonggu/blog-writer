@@ -12,6 +12,7 @@ interface PromptInput {
   sponsorName?: string;
   imageCount: number;
   requiredPhrases?: string;
+  revisitIntent: "definitely" | "maybe" | "no";
   visionDescriptions?: string[];
 }
 
@@ -60,6 +61,13 @@ export function buildPrompt(input: PromptInput): PromptOutput {
       .join("\n");
     parts.push(`## 이미지 분석 결과\n${descriptions}`);
   }
+
+  const revisitMap = {
+    definitely: "꼭 재방문할 의사 있음 (강력 추천)",
+    maybe: "기회가 되면 다시 방문할 수 있음 (괜찮았음)",
+    no: "재방문 의사 없음 (아쉬웠음)",
+  };
+  parts.push(`## 재방문 의사\n${revisitMap[input.revisitIntent]}\n총평에 이 재방문 의사를 자연스럽게 반영해주세요.`);
 
   if (input.requiredPhrases) {
     parts.push(`## 필수 포함 문구\n다음 문구를 글에 자연스럽게 녹여서 반드시 포함해주세요:\n"${input.requiredPhrases}"`);

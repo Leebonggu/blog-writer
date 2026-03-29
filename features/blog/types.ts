@@ -5,6 +5,8 @@ export type TonePresetId = "friendly" | "informative" | "emotional";
 
 export type SponsorType = "self-paid" | "sponsored";
 
+export type RevisitIntent = "definitely" | "maybe" | "no";
+
 export interface TonePreset {
   id: TonePresetId;
   name: string;
@@ -21,6 +23,7 @@ export interface BlogInput {
   tonePresetId: TonePresetId | "custom";
   referenceText?: string;
   requiredPhrases?: string;
+  revisitIntent: RevisitIntent;
   useVision: boolean;
   model: LLMModel;
 }
