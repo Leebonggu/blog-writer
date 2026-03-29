@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/Select";
 import { ImageUploader } from "@/components/image-uploader/ImageUploader";
@@ -39,6 +39,16 @@ export function BlogForm() {
   const [manualMenus, setManualMenus] = useState("");
   const [manualCategory, setManualCategory] = useState("");
   const [useManualInput, setUseManualInput] = useState(false);
+
+  // Refs
+  const resultRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to result when generated
+  useEffect(() => {
+    if (result && resultRef.current) {
+      resultRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [result]);
 
   const handleScrape = async () => {
     if (!naverMapUrl) return;
@@ -131,10 +141,10 @@ export function BlogForm() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-8">
+    <div className="max-w-3xl mx-auto space-y-6 sm:space-y-8">
       {/* Basic Info */}
       <section className="space-y-4">
-        <h2 className="text-lg font-bold text-gray-800">기본 정보</h2>
+        <h2 className="text-base sm:text-lg font-bold text-gray-800">기본 정보</h2>
 
         <div className="flex flex-col gap-1">
           <label className="text-sm font-medium text-gray-700">상호명 *</label>
@@ -143,21 +153,21 @@ export function BlogForm() {
             value={storeName}
             onChange={(e) => setStoreName(e.target.value)}
             placeholder="예: 맛있는 치킨집"
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
           />
         </div>
 
         <div className="flex flex-col gap-1">
           <label className="text-sm font-medium text-gray-700">네이버 지도 URL *</label>
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <input
               type="text"
               value={naverMapUrl}
               onChange={(e) => setNaverMapUrl(e.target.value)}
-              placeholder="https://map.naver.com/v5/entry/place/..."
-              className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              placeholder="https://naver.me/... 또는 map.naver.com/..."
+              className="flex-1 border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
             />
-            <Button variant="secondary" onClick={handleScrape} loading={scraping}>
+            <Button variant="secondary" onClick={handleScrape} loading={scraping} className="sm:w-auto w-full">
               정보 가져오기
             </Button>
           </div>
@@ -185,11 +195,11 @@ export function BlogForm() {
         {useManualInput && (
           <div className="border border-gray-200 rounded-lg p-4 space-y-3 bg-gray-50">
             <p className="text-sm font-medium text-gray-600">가게 정보 직접 입력</p>
-            <input type="text" value={manualAddress} onChange={(e) => setManualAddress(e.target.value)} placeholder="주소" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
-            <input type="text" value={manualHours} onChange={(e) => setManualHours(e.target.value)} placeholder="영업시간 (예: 매일 11:00 - 22:00)" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
-            <input type="text" value={manualCategory} onChange={(e) => setManualCategory(e.target.value)} placeholder="카테고리 (예: 한식, 치킨)" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
-            <input type="text" value={manualPhone} onChange={(e) => setManualPhone(e.target.value)} placeholder="전화번호" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
-            <textarea value={manualMenus} onChange={(e) => setManualMenus(e.target.value)} placeholder={"메뉴 (줄바꿈으로 구분, 형식: 메뉴명, 가격)\n예: 후라이드치킨, 18000원"} rows={3} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+            <input type="text" value={manualAddress} onChange={(e) => setManualAddress(e.target.value)} placeholder="주소" className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm" />
+            <input type="text" value={manualHours} onChange={(e) => setManualHours(e.target.value)} placeholder="영업시간 (예: 매일 11:00 - 22:00)" className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm" />
+            <input type="text" value={manualCategory} onChange={(e) => setManualCategory(e.target.value)} placeholder="카테고리 (예: 한식, 치킨)" className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm" />
+            <input type="text" value={manualPhone} onChange={(e) => setManualPhone(e.target.value)} placeholder="전화번호" className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm" />
+            <textarea value={manualMenus} onChange={(e) => setManualMenus(e.target.value)} placeholder={"메뉴 (줄바꿈으로 구분, 형식: 메뉴명, 가격)\n예: 후라이드치킨, 18000원"} rows={3} className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm" />
           </div>
         )}
 
@@ -212,7 +222,7 @@ export function BlogForm() {
               value={sponsorName}
               onChange={(e) => setSponsorName(e.target.value)}
               placeholder="협찬 업체명"
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm mt-2"
+              className="border border-gray-300 rounded-lg px-3 py-2.5 text-sm mt-2"
             />
           )}
         </div>
@@ -220,25 +230,38 @@ export function BlogForm() {
 
       {/* Images */}
       <section className="space-y-4">
-        <h2 className="text-lg font-bold text-gray-800">이미지</h2>
+        <h2 className="text-base sm:text-lg font-bold text-gray-800">이미지</h2>
         <ImageUploader images={images} onChange={setImages} />
       </section>
 
       {/* Options */}
       <section className="space-y-4">
-        <h2 className="text-lg font-bold text-gray-800">글 옵션</h2>
+        <h2 className="text-base sm:text-lg font-bold text-gray-800">글 옵션</h2>
 
-        <Select
-          label="톤 선택"
-          value={tonePresetId}
-          onChange={(e) => setTonePresetId(e.target.value as TonePresetId | "custom")}
-          options={[
-            { value: "friendly", label: "친근체" },
-            { value: "informative", label: "정보전달형" },
-            { value: "emotional", label: "감성체" },
-            { value: "custom", label: "레퍼런스 글 기반" },
-          ]}
-        />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Select
+            label="톤 선택"
+            value={tonePresetId}
+            onChange={(e) => setTonePresetId(e.target.value as TonePresetId | "custom")}
+            options={[
+              { value: "friendly", label: "친근체" },
+              { value: "informative", label: "정보전달형" },
+              { value: "emotional", label: "감성체" },
+              { value: "custom", label: "레퍼런스 글 기반" },
+            ]}
+          />
+
+          <Select
+            label="재방문 의사"
+            value={revisitIntent}
+            onChange={(e) => setRevisitIntent(e.target.value as RevisitIntent)}
+            options={[
+              { value: "definitely", label: "꼭 재방문! (강력 추천)" },
+              { value: "maybe", label: "기회되면 다시 (괜찮았음)" },
+              { value: "no", label: "재방문 없음 (아쉬웠음)" },
+            ]}
+          />
+        </div>
 
         {tonePresetId === "custom" && (
           <div className="flex flex-col gap-1">
@@ -248,7 +271,7 @@ export function BlogForm() {
               onChange={(e) => setReferenceText(e.target.value)}
               placeholder="참고할 블로그 글의 URL 또는 텍스트를 입력하세요"
               rows={4}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>
         )}
@@ -260,42 +283,31 @@ export function BlogForm() {
             onChange={(e) => setRequiredPhrases(e.target.value)}
             placeholder="예: 바삭바삭한 치킨, 가성비 맛집"
             rows={2}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
           />
         </div>
 
-        <Select
-          label="재방문 의사"
-          value={revisitIntent}
-          onChange={(e) => setRevisitIntent(e.target.value as RevisitIntent)}
-          options={[
-            { value: "definitely", label: "꼭 재방문! (강력 추천)" },
-            { value: "maybe", label: "기회되면 다시 (괜찮았음)" },
-            { value: "no", label: "재방문 없음 (아쉬웠음)" },
-          ]}
-        />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="flex items-center gap-2">
+            <input type="checkbox" id="useVision" checked={useVision} onChange={(e) => setUseVision(e.target.checked)} className="w-4 h-4" />
+            <label htmlFor="useVision" className="text-sm text-gray-700">이미지 비전 분석</label>
+          </div>
 
-        <div className="flex items-center gap-4">
-          <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={useVision} onChange={(e) => setUseVision(e.target.checked)} />
-            이미지 비전 분석 (ON 시 이미지 기반 묘사 생성, 비용 증가)
-          </label>
+          <Select
+            label="LLM 선택"
+            value={model}
+            onChange={(e) => setModel(e.target.value as LLMModel)}
+            options={[
+              { value: "claude-sonnet", label: "Claude Sonnet (추천)" },
+              { value: "gpt-4o", label: "GPT-4o" },
+            ]}
+          />
         </div>
-
-        <Select
-          label="LLM 선택"
-          value={model}
-          onChange={(e) => setModel(e.target.value as LLMModel)}
-          options={[
-            { value: "claude-sonnet", label: "Claude Sonnet (추천)" },
-            { value: "gpt-4o", label: "GPT-4o" },
-          ]}
-        />
       </section>
 
       {/* Generate */}
-      <div className="flex flex-col gap-2">
-        <Button onClick={handleGenerate} loading={loading} className="w-full py-3 text-lg">
+      <div className="flex flex-col gap-2 sticky bottom-0 bg-gray-50 py-3 -mx-4 px-4 sm:static sm:bg-transparent sm:py-0 sm:mx-0 sm:px-0">
+        <Button onClick={handleGenerate} loading={loading} className="w-full py-3 text-base sm:text-lg">
           글 생성하기
         </Button>
         {error && <p className="text-sm text-red-500">{error}</p>}
@@ -312,9 +324,9 @@ export function BlogForm() {
 
       {/* Result */}
       {result && (
-        <section className="space-y-4">
+        <section ref={resultRef} className="space-y-4 scroll-mt-4">
           <BlogPreview result={result} images={images} />
-          <Button variant="secondary" onClick={handleGenerate} loading={loading}>
+          <Button variant="secondary" onClick={handleGenerate} loading={loading} className="w-full sm:w-auto">
             다시 생성하기
           </Button>
         </section>
