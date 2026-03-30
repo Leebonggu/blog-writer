@@ -161,6 +161,33 @@ export function BlogForm() {
     abortControllerRef.current?.abort();
   };
 
+  const handleReset = () => {
+    setCategory("restaurant");
+    setStoreName("");
+    setNaverMapUrl("");
+    setSponsorType("self-paid");
+    setSponsorName("");
+    setImages([]);
+    setTonePresetId("friendly");
+    setReferenceText("");
+    setRequiredPhrases("");
+    setPersonalNote("");
+    setRevisitIntent("definitely");
+    setIncludeHonestReview(false);
+    setUseVision(true);
+    setModel("claude-sonnet");
+    setStoreInfo(null);
+    setScrapeError("");
+    setResult(null);
+    setError("");
+    setManualAddress("");
+    setManualPhone("");
+    setManualHours("");
+    setManualMenus("");
+    setManualCategory("");
+    setUseManualInput(false);
+  };
+
   return (
     <div className="max-w-3xl mx-auto space-y-6 sm:space-y-8">
       {/* Category */}
@@ -375,9 +402,14 @@ export function BlogForm() {
             생성 취소
           </Button>
         ) : (
-          <Button onClick={handleGenerate} className="w-full py-3 text-base sm:text-lg">
-            글 생성하기
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={handleGenerate} className="flex-1 py-3 text-base sm:text-lg">
+              글 생성하기
+            </Button>
+            <Button variant="secondary" onClick={handleReset} className="py-3 px-4 text-base sm:text-lg">
+              초기화
+            </Button>
+          </div>
         )}
         {error && <p className="text-sm text-red-500">{error}</p>}
       </div>
