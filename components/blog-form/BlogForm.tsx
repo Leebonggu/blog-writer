@@ -24,6 +24,7 @@ export function BlogForm() {
   const [requiredPhrases, setRequiredPhrases] = useState("");
   const [personalNote, setPersonalNote] = useState("");
   const [revisitIntent, setRevisitIntent] = useState<RevisitIntent>("definitely");
+  const [includeHonestReview, setIncludeHonestReview] = useState(false);
   const [useVision, setUseVision] = useState(true);
   const [model, setModel] = useState<LLMModel>("claude-sonnet");
 
@@ -131,6 +132,7 @@ export function BlogForm() {
           requiredPhrases: requiredPhrases || undefined,
           personalNote: personalNote || undefined,
           revisitIntent,
+          includeHonestReview,
           useVision,
           model,
         }),
@@ -344,6 +346,11 @@ export function BlogForm() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="flex items-center gap-2">
+            <input type="checkbox" id="includeHonestReview" checked={includeHonestReview} onChange={(e) => setIncludeHonestReview(e.target.checked)} className="w-4 h-4" />
+            <label htmlFor="includeHonestReview" className="text-sm text-gray-700">솔직 리뷰 (아쉬운 점 포함)</label>
+          </div>
+
           <div className="flex items-center gap-2">
             <input type="checkbox" id="useVision" checked={useVision} onChange={(e) => setUseVision(e.target.checked)} className="w-4 h-4" />
             <label htmlFor="useVision" className="text-sm text-gray-700">이미지 비전 분석</label>

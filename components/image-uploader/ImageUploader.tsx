@@ -10,6 +10,8 @@ interface ImageUploaderProps {
 
 export function ImageUploader({ images, onChange, maxImages = 20 }: ImageUploaderProps) {
   const [isDragging, setIsDragging] = useState(false);
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const resizeImage = (file: File, maxSize: number): Promise<string> => {
@@ -52,17 +54,36 @@ export function ImageUploader({ images, onChange, maxImages = 20 }: ImageUploade
   const handleDrop = (e: DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    if (e.dataTransfer.files.length > 0) {
+
+    // File drop (new images)
+    if (e.dataTransfer.files.length > 0 && dragIndex === null) {
       processFiles(e.dataTransfer.files);
+      return;
     }
+
+    // Reorder drop
+    if (dragIndex !== null && dragOverIndex !== null && dragIndex !== dragOverIndex) {
+      const reordered = [...images];
+      const [moved] = reordered.splice(dragIndex, 1);
+      reordered.splice(dragOverIndex, 0, moved);
+      onChange(reordered);
+    }
+    setDragIndex(null);
+    setDragOverIndex(null);
   };
 
   const handleDragOver = (e: DragEvent) => {
     e.preventDefault();
-    setIsDragging(true);
+    if (dragIndex === null) {
+      setIsDragging(true);
+    }
   };
 
-  const handleDragLeave = () => setIsDragging(false);
+  const handleDragLeave = () => {
+    if (dragIndex === null) {
+      setIsDragging(false);
+    }
+  };
 
   const handleClick = () => inputRef.current?.click();
 
@@ -75,6 +96,31 @@ export function ImageUploader({ images, onChange, maxImages = 20 }: ImageUploade
 
   const removeImage = (index: number) => {
     onChange(images.filter((_, i) => i !== index));
+  };
+
+  const moveImage = (from: number, to: number) => {
+    if (to < 0 || to >= images.length) return;
+    const reordered = [...images];
+    const [moved] = reordered.splice(from, 1);
+    reordered.splice(to, 0, moved);
+    onChange(reordered);
+  };
+
+  // Image item drag handlers
+  const handleItemDragStart = (e: DragEvent, index: number) => {
+    setDragIndex(index);
+    e.dataTransfer.effectAllowed = "move";
+  };
+
+  const handleItemDragOver = (e: DragEvent, index: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    setDragOverIndex(index);
+  };
+
+  const handleItemDragEnd = () => {
+    setDragIndex(null);
+    setDragOverIndex(null);
   };
 
   return (
@@ -108,12 +154,34 @@ export function ImageUploader({ images, onChange, maxImages = 20 }: ImageUploade
       {images.length > 0 && (
         <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
           {images.map((img, i) => (
-            <div key={i} className="relative group">
+            <div
+              key={i}
+              draggable
+              onDragStart={(e) => handleItemDragStart(e, i)}
+              onDragOver={(e) => handleItemDragOver(e, i)}
+              onDragEnd={handleItemDragEnd}
+              onDrop={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (dragIndex !== null && dragIndex !== i) {
+                  const reordered = [...images];
+                  const [moved] = reordered.splice(dragIndex, 1);
+                  reordered.splice(i, 0, moved);
+                  onChange(reordered);
+                }
+                setDragIndex(null);
+                setDragOverIndex(null);
+              }}
+              className={`relative group cursor-grab active:cursor-grabbing transition-all ${
+                dragIndex === i ? "opacity-40 scale-95" : ""
+              } ${dragOverIndex === i && dragIndex !== null && dragIndex !== i ? "ring-2 ring-green-500 ring-offset-1" : ""}`}
+            >
               <img
                 src={img}
                 alt={`이미지 ${i + 1}`}
-                className="w-full h-20 object-cover rounded-lg"
+                className="w-full h-20 object-cover rounded-lg pointer-events-none"
               />
+              {/* Remove button */}
               <button
                 type="button"
                 onClick={() => removeImage(i)}
@@ -121,12 +189,44 @@ export function ImageUploader({ images, onChange, maxImages = 20 }: ImageUploade
               >
                 X
               </button>
+              {/* Index badge */}
               <span className="absolute bottom-1 left-1 bg-black/60 text-white text-xs px-1 rounded">
                 {i + 1}
               </span>
+              {/* Arrow buttons */}
+              <div className="absolute bottom-1 right-1 flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                {i > 0 && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      moveImage(i, i - 1);
+                    }}
+                    className="bg-black/60 text-white rounded w-5 h-5 text-xs flex items-center justify-center hover:bg-black/80"
+                  >
+                    ←
+                  </button>
+                )}
+                {i < images.length - 1 && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      moveImage(i, i + 1);
+                    }}
+                    className="bg-black/60 text-white rounded w-5 h-5 text-xs flex items-center justify-center hover:bg-black/80"
+                  >
+                    →
+                  </button>
+                )}
+              </div>
             </div>
           ))}
         </div>
+      )}
+
+      {images.length > 1 && (
+        <p className="text-xs text-gray-400">드래그하거나 화살표 버튼으로 순서를 변경할 수 있어요</p>
       )}
     </div>
   );

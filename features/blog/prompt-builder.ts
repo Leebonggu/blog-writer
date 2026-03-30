@@ -16,6 +16,7 @@ interface PromptInput {
   requiredPhrases?: string;
   personalNote?: string;
   revisitIntent: "definitely" | "maybe" | "no";
+  includeHonestReview?: boolean;
   visionDescriptions?: string[];
 }
 
@@ -82,9 +83,7 @@ export function buildPrompt(input: PromptInput): PromptOutput {
   }
 
   if (input.sponsorType === "sponsored") {
-    parts.push(`## 협찬 정보\n협찬 업체: ${input.sponsorName ?? "업체명 미입력"}`);
-  } else {
-    parts.push(`## 내돈내산\n직접 방문하여 작성하는 솔직한 후기입니다.`);
+    parts.push(`## 협찬 정보\n협찬 업체: ${input.sponsorName ?? "업체명 미입력"}\n글 첫 줄에 협찬임을 자연스럽게 밝혀주세요.`);
   }
 
   parts.push(buildImageGuide(input.imageCount));
@@ -102,6 +101,14 @@ export function buildPrompt(input: PromptInput): PromptOutput {
     no: "재방문 의사 없음 (아쉬웠음)",
   };
   parts.push(`## 재방문 의사\n${revisitMap[input.revisitIntent]}\n총평에 이 재방문 의사를 자연스럽게 반영해주세요.`);
+
+  if (input.includeHonestReview) {
+    parts.push(`## 솔직 리뷰 모드
+아쉬운 점이나 단점도 자연스럽게 1~2개 포함해주세요.
+예: 주차가 불편하다, 웨이팅이 길다, 양이 아쉽다, 가격이 조금 있다 등
+단점을 억지로 만들지 말고, 해당 업종에서 흔히 있을 수 있는 현실적인 아쉬운 점을 넣어주세요.
+이렇게 하면 글이 더 솔직하고 신뢰감 있게 느껴집니다.`);
+  }
 
   if (input.personalNote) {
     parts.push(`## 작성자의 개인 감상/메모\n아래 내용은 작성자가 직접 느낀 점입니다. 글에 자연스럽게 녹여서 반영해주세요. 그대로 복사하지 말고, 톤에 맞게 재구성하세요.\n"${input.personalNote}"`);

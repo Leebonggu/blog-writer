@@ -85,6 +85,7 @@ export async function generateBlogPost(
     requiredPhrases: input.requiredPhrases,
     personalNote: input.personalNote,
     revisitIntent: input.revisitIntent ?? "definitely",
+    includeHonestReview: input.includeHonestReview,
     visionDescriptions,
   });
 

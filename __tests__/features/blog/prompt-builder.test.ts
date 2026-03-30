@@ -25,8 +25,8 @@ describe("buildPrompt", () => {
       revisitIntent: "definitely",
     });
 
-    expect(result.systemPrompt).toContain("네이버 블로그 맛집 리뷰");
-    expect(result.systemPrompt).toContain("친근");
+    expect(result.systemPrompt).toContain("맛집");
+    expect(result.systemPrompt).toContain("카톡");
     expect(result.userPrompt).toContain("맛있는 치킨집");
     expect(result.userPrompt).toContain("서울시 강남구");
     expect(result.userPrompt).toContain("후라이드치킨");

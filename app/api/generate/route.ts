@@ -6,7 +6,7 @@ import type { StoreInfo } from "@/features/scraper/types";
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const { category, storeName, storeInfo, sponsorType, sponsorName, images, tonePresetId, referenceText, requiredPhrases, personalNote, revisitIntent, useVision, model } = body;
+  const { category, storeName, storeInfo, sponsorType, sponsorName, images, tonePresetId, referenceText, requiredPhrases, personalNote, revisitIntent, includeHonestReview, useVision, model } = body;
 
   if (!storeName || !storeInfo) {
     return NextResponse.json({ error: "storeName and storeInfo are required" }, { status: 400 });
@@ -30,6 +30,7 @@ export async function POST(request: Request) {
       requiredPhrases,
       personalNote,
       revisitIntent: revisitIntent ?? "definitely",
+      includeHonestReview: includeHonestReview ?? false,
       useVision: useVision ?? true,
       model: model ?? "claude-sonnet",
     };

@@ -27,6 +27,7 @@ export interface BlogInput {
   requiredPhrases?: string;
   revisitIntent: RevisitIntent;
   personalNote?: string;
+  includeHonestReview: boolean;
   useVision: boolean;
   model: LLMModel;
 }
