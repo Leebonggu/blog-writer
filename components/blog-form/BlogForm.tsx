@@ -251,7 +251,7 @@ export function BlogForm() {
           {storeInfo && !useManualInput && (
             <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-sm text-green-800">
               <p>주소: {storeInfo.address}</p>
-              <p>영업시간: {storeInfo.businessHours || "정보 없음"}</p>
+              <div>영업시간: {storeInfo.businessHours ? storeInfo.businessHours.split("\n").map((line, i) => <span key={i}>{i > 0 && <br />}{line}</span>) : "정보 없음"}</div>
               <p>카테고리: {storeInfo.category}</p>
               <p>메뉴: {storeInfo.menus.map((m) => m.name).join(", ") || "정보 없음"}</p>
               <button
