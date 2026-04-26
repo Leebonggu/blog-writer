@@ -37,6 +37,7 @@ export interface BlogOutput {
   html: string;
   plainText: string;
   imageGuide: ImagePlacement[];
+  hashtags: string[];
 }
 
 export interface ImagePlacement {
