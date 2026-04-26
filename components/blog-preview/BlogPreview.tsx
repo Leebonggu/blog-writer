@@ -76,6 +76,23 @@ export function BlogPreview({ result, images, storeName, locationCategory }: Blo
         </div>
       )}
 
+      {/* Hashtags */}
+      {result.hashtags.length > 0 && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-semibold text-blue-700">추천 해시태그 (SEO 최적화)</span>
+            <CopyButton text={result.hashtags.join(" ")} label="전체 복사" />
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {result.hashtags.map((tag) => (
+              <span key={tag} className="text-sm text-blue-700 bg-blue-100 rounded px-2 py-0.5">
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Copy Buttons */}
       <div className="flex gap-2">
         <CopyButton text={result.plainText} label="텍스트 복사" />

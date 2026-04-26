@@ -94,12 +94,22 @@ export async function generateBlogPost(
   // Extract title from [TITLE]...[/TITLE] tag
   const titleMatch = raw.match(/\[TITLE\](.*?)\[\/TITLE\]/);
   const title = titleMatch ? titleMatch[1].trim() : input.storeName;
-  const html = raw.replace(/\[TITLE\].*?\[\/TITLE\]\s*/, "").trim();
+
+  const tagsMatch = raw.match(/\[TAGS\]([\s\S]*?)\[\/TAGS\]/);
+  const hashtags = tagsMatch
+    ? tagsMatch[1].trim().split(/\s+/).filter((t) => t.startsWith("#"))
+    : [];
+
+  const html = raw
+    .replace(/\[TITLE\].*?\[\/TITLE\]\s*/, "")
+    .replace(/\[TAGS\][\s\S]*?\[\/TAGS\]/, "")
+    .trim();
 
   return {
     title,
     html,
     plainText: htmlToPlainText(html),
     imageGuide: extractImageGuide(html),
+    hashtags,
   };
 }
